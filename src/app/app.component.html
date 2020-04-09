@@ -1,21 +1,109 @@
-<!--The content below is only a placeholder and can be replaced.-->
-<div style="text-align:center">
-  <h1>
-    Welcome to {{ title }}!
-  </h1>
-  <img width="300" alt="Angular Logo" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNTAgMjUwIj4KICAgIDxwYXRoIGZpbGw9IiNERDAwMzEiIGQ9Ik0xMjUgMzBMMzEuOSA2My4ybDE0LjIgMTIzLjFMMTI1IDIzMGw3OC45LTQzLjcgMTQuMi0xMjMuMXoiIC8+CiAgICA8cGF0aCBmaWxsPSIjQzMwMDJGIiBkPSJNMTI1IDMwdjIyLjItLjFWMjMwbDc4LjktNDMuNyAxNC4yLTEyMy4xTDEyNSAzMHoiIC8+CiAgICA8cGF0aCAgZmlsbD0iI0ZGRkZGRiIgZD0iTTEyNSA1Mi4xTDY2LjggMTgyLjZoMjEuN2wxMS43LTI5LjJoNDkuNGwxMS43IDI5LjJIMTgzTDEyNSA1Mi4xem0xNyA4My4zaC0zNGwxNy00MC45IDE3IDQwLjl6IiAvPgogIDwvc3ZnPg==">
-</div>
-<h2>Here are some links to help you start: </h2>
-<ul>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://angular.io/tutorial">Tour of Heroes</a></h2>
-  </li>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://github.com/angular/angular-cli/wiki">CLI Documentation</a></h2>
-  </li>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://blog.angular.io/">Angular blog</a></h2>
-  </li>
-</ul>
+<div class="filter-container">
+  <h1>Trinning portal</h1>
+  
+  </div>
+<div class="filter-container" style="background: #cce6ff !important">
+  NOTE: kindly select department and event, <br> if u create any event for other department than you need to change depertment after creaation of event to see up comming events<br>
+  <label>select depertment*
+    <select #deptValue [(ngModel)]="selectedDept" (ngModelChange)="departmentSelceted()">
+      <option *ngFor="let dept of departmentArr" [ngValue]="dept">{{dept}}</option>
+    </select>
+  </label>
 
-<router-outlet></router-outlet>
+  <label *ngIf="selectedDept">select event *
+    <select *ngIf="selectedDept" [(ngModel)]="selectedEvent" (ngModelChange)="getValue()">
+      <option *ngFor="let event of eventArr" [ngValue]="event.value">{{event.event}}</option>
+    </select>
+  </label>
+
+</div>
+<div class="container">
+  <form *ngIf="selectedEvent == 'upcomming_event'">
+
+    <fieldset>
+      <legend>Upcomming events</legend>
+      <p *ngIf="upcommingEventArray.length  == 0|| upcommingEventArray == undefined "> No Upcomming event found</p>
+      <div class="upcomming">
+          <input *ngIf="upcommingEventArray.length  == 0|| upcommingEventArray == undefined " id="search" type="text" name="serach" placeholder="serach" [(ngModel)]="serchInput" (ngModelChange)="serch($event)">
+        <!-- <form autocomplete="off" action="/action_page.php">
+          <div class="autocomplete" style="width:300px;">
+            <input id="myInput" type="text" name="myCountry" placeholder="Country" [(ngModel)]="serchInput" (ngModelChange)="departmentSelceted($event)">
+          
+
+          </div>
+        
+        </form> -->
+        <div class="card" *ngFor="let data of upcommingEventArray; let i = index;">
+          <p>trainning name:</p>
+          <p>{{data.trainingName}}</p>
+          <p>Duration:</p>
+          <p>{{data.Duration}}</p>
+          <p>start date:</p>
+          <p>{{data.startDate}}</p>
+          <p>end date:</p>
+          <p>{{data.endDate}}</p>
+          <p>department:</p>
+          <p>{{data.formSelectedDept}}</p>
+          <p>room booked:</p>
+          <p>{{data.selectedMeetingRoom}}</p>
+          <p>Description:</p>
+          <p>{{data.dec}}</p>
+
+
+          <button type="submit" (click)="editdata(i)">Edit</button>
+
+        </div>
+
+      </div>
+    </fieldset>
+  </form>
+
+  <form *ngIf="selectedEvent == 'new Event' || editFlag">
+    <fieldset>
+      <legend>Create new event</legend>
+      <!-- ---------------------------------------create event------------------------------------ -->
+      <ul class="flex-outer">
+        <li>
+          <label>Training Name *</label>
+          <input type="text" id="training-name" name="training" [(ngModel)]="fornInput.trainingName"
+            placeholder="Enter your first name here">
+        </li>
+        <li>
+          <label for="phone">Duration  in hrs*</label>
+          <input type="number" name="bdaytime" name="s" [(ngModel)]="fornInput.Duration">
+        </li>
+        <li>
+          <label for="phone">Start / end date and time *</label>
+          <input type="datetime-local" name="bdaytime" name="sdd" [(ngModel)]="fornInput.startDate">
+          <input type="datetime-local" name="daef" [(ngModel)]="fornInput.endDate" name="end">
+        </li>
+        <li>
+          <label for="email">Department *</label>
+          <select [(ngModel)]="fornInput.formSelectedDept" name="formDpt">
+            <option *ngFor="let dept of departmentArr" [ngValue]="dept">{{dept}}</option>
+          </select>
+        </li>
+
+        <li>
+          <label for="message">Meeting Room *</label>
+          <select [(ngModel)]="fornInput.selectedMeetingRoom" name="formoom">
+            <option *ngFor="let room of meetingRoom" [ngValue]="room">{{room}}</option>
+          </select>
+
+        </li>
+        <li>
+          <label for="last-name">Description</label>
+          <textarea rows="6" id="message" placeholder="Enter your message here" [(ngModel)]="fornInput.dec"
+            name="delll"></textarea>
+        </li>
+
+        <li>
+          <p *ngIf='errorFlag' style="color: red">please fill all the mandatory fileld ( *)</p>
+          <p *ngIf='successflag' style="color: green">Event created successfully ( *)</p>
+          <button type="submit" (click)=" validation()">Submit</button>
+        </li>
+      </ul>
+
+    </fieldset>
+  </form>
+</div>
